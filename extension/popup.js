@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         if (tabs.length === 0) return;
         const original_url = tabs[0].url;
-        console.log("Original URL sent:", original_url); // 🛠️ Debugging
+        console.log("Original URL sent:", original_url);
         document.getElementById('site').textContent = original_url;
 
         fetch('http://localhost:8000/analyze', {
@@ -22,10 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Full Server Response:", data); // 🛠️ Debugging
-            console.log("Result value:", data.result); // 🛠️ Debugging
+            console.log("Full Server Response:", data);
+            console.log("Result value:", data.result);
         
-            if (data.result === 'SAFE' || data.result === '1') {  // 🔧 Handle both possible formats
+            if (data.result === 'SAFE' || data.result === '1') { 
                 document.getElementById('div1').textContent = 'SAFE';
                 document.getElementById('div1').style.color = 'green';
                 document.getElementById('div2').textContent = '';

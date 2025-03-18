@@ -1,4 +1,3 @@
-import sys
 from googlesearch import search
 from bs4 import BeautifulSoup
 import urllib
@@ -42,8 +41,7 @@ def having_at_symbol(url):
 
 
 def double_slash_redirecting(url):
-    # since the position starts from 0, we have given 6 and not 7 which is according to the document.
-    # It is convenient and easier to just use string search here to search the last occurrence instead of re.
+    
     last_double_slash = url.rfind('//')
     return -1 if last_double_slash > 6 else 1
 
@@ -54,9 +52,7 @@ def prefix_suffix(domain):
 
 
 def having_sub_domain(url):
-    # Here, instead of greater than 1 we will take greater than 3 since the greater than 1 condition is when www and
-    # country domain dots are skipped
-    # Accordingly other dots will increase by 1
+
     if having_ip_address(url) == -1:
         match = re.search(
             '(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.'
@@ -79,8 +75,7 @@ def domain_registration_length(domain):
     today = datetime.strptime(today, '%Y-%m-%d')
 
     registration_length = 0
-    # Some domains do not have expiration dates. This if condition makes sure that the expiration date is used only
-    # when it is present.
+
     if expiration_date:
         registration_length = abs((expiration_date - today).days)
     return -1 if registration_length / 365 <= 1 else 1
@@ -146,28 +141,22 @@ def url_of_anchor(wiki, soup, domain):
     i = 0
     unsafe = 0
     for a in soup.find_all('a', href=True):
-        # 2nd condition was 'JavaScript ::void(0)' but we put JavaScript because the space between javascript and ::
-        # might not be
-        # there in the actual a['href']
         if "#" in a['href'] or "javascript" in a['href'].lower() or "mailto" in a['href'].lower() or not (
                 wiki in a['href'] or domain in a['href']):
             unsafe = unsafe + 1
         i = i + 1
-        # print a['href']
     try:
         percentage = unsafe / float(i) * 100
     except:
         return 1
     if percentage < 31.0:
         return 1
-        # return percentage
     elif 31.0 <= percentage < 67.0:
         return 0
     else:
         return -1
 
 
-# Links in <Script> and <Link> tags
 def links_in_tags(wiki, soup, domain):
     i = 0
     success = 0
@@ -195,8 +184,6 @@ def links_in_tags(wiki, soup, domain):
         return -1
 
 
-# Server Form Handler (SFH)
-# Have written conditions directly from word file..as there are no sites to test ######
 def sfh(wiki, soup, domain):
     for form in soup.find_all('form', action=True):
         if form['action'] == "" or form['action'] == "about:blank":
@@ -208,12 +195,9 @@ def sfh(wiki, soup, domain):
     return 1
 
 
-# Mail Function
-# PHP mail() function is difficult to retrieve, hence the following function is based on mailto
 def submitting_to_email(soup):
     for form in soup.find_all('form', action=True):
         return -1 if "mailto:" in form['action'] else 1
-    # In case there is no form in the soup, then it is safe to return 1.
     return 1
 
 
@@ -223,15 +207,12 @@ def abnormal_url(domain, url):
     return 1 if match else -1
 
 
-# IFrame Redirection
 def i_frame(soup):
     for i_frame in soup.find_all('i_frame', width=True, height=True, frameBorder=True):
-        # Even if one iFrame satisfies the below conditions, it is safe to return -1 for this method.
         if i_frame['width'] == "0" and i_frame['height'] == "0" and i_frame['frameBorder'] == "0":
             return -1
         if i_frame['width'] == "0" or i_frame['height'] == "0" or i_frame['frameBorder'] == "0":
             return 0
-    # If none of the iframes have a width or height of zero or a frameBorder of size 0, then it is safe to return 1.
     return 1
 
 

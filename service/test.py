@@ -1,4 +1,3 @@
-import warnings
 import joblib
 import features_extraction
 import sys
@@ -15,7 +14,6 @@ def predict(test_url):
 
     pred = clf.predict(features_test)
     print("The URL: " + test_url)
-    print("Prediction:")
     print(pred)
     return int(pred[0])
 
