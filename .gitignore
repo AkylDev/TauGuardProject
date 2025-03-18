@@ -1,0 +1,10 @@
+.vscode/settings.json
+venv/
+service/__pycache__/features_extraction.cpython-38.pyc
+service/__pycache__/patterns.cpython-38.pyc
+service/markup.txt
+service/features_extraction.pyc
+service/patterns.pyc
+extension.crx
+extension.pem
+service/__pycache__
